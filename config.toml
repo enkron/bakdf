@@ -1,0 +1,11 @@
+dotfiles = [
+	".tmux.conf",
+	".bash_profile",
+    ".zshrc",
+    ".vimrc",
+    ".local",
+    ".ssh",
+    ".aws",
+    ".alacritty.yml",
+    ".gitconfig"
+]
