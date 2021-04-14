@@ -13,6 +13,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // - Pull out all to separate functions, structures etc
     // - Move all stuff to lib.rs
     // - Implement tests
+    // - Unbind args from hardcoded args[1] position
 
     println!("{:?}", Config::new(&args)); // DEBUG
 
@@ -27,12 +28,17 @@ struct Config {
 
 impl Config {
     fn new(args: &[String]) -> Result<Config, Box<dyn Error>> {
-        // read configuration file into a string
-        let config_str = fs::read_to_string(&args[1])?;
-        // get .toml structure from string
-        let config: Config = toml::from_str(&config_str)?;
+        for arg in args.iter() {
+            if arg == "config.toml" {
+                // read configuration file into a string
+                let config_str = fs::read_to_string(&arg)?;
 
-        let dotfiles = config.dotfiles;
+                // get .toml structure from string
+                let config: Config = toml::from_str(&config_str)?;
+
+                let dotfiles = config.dotfiles;
+            }
+        }
 
         Ok(Config { dotfiles })
     }
