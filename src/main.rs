@@ -1,7 +1,7 @@
 extern crate serde;
 
 use serde::Deserialize;
-use std::{env, error, fs};
+use std::{env, error, fs, path::Path};
 use toml;
 
 fn main() -> Result<(), Box<dyn error::Error>> {
@@ -13,9 +13,18 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     // - Pull out all to separate functions, structures etc
     // - Move all stuff to lib.rs
     // - Implement tests
-    // - Unbind args from hardcoded args[1] position
+    // - Unbind args from hardcoded args[1] position [V]
 
-    println!("{:?}", Config::new(&args)?); // DEBUG
+    let config = Config::new(&args)?;
+
+    for path in config.dotfiles {
+        let dotfile_path = env::var("HOME").unwrap() + "/" + &path;
+
+        if Path::new(&dotfile_path).exists() {
+            println!("Copying {} ...", path);
+            // Next copying logic should be implementing
+        }
+    }
 
     Ok(())
 }
