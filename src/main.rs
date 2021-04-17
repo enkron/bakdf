@@ -4,6 +4,8 @@ use serde::Deserialize;
 use std::{env, error, fs, path::Path};
 use toml;
 
+const CONFIG: &str = "config.toml";
+
 fn main() -> Result<(), Box<dyn error::Error>> {
     // TODO:
     // - Add error handling
@@ -11,6 +13,8 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     // - Move all stuff to lib.rs
     // - Implement tests
     // - Unbind args from hardcoded args[1] position [V]
+    // - Add a target as command line option and create a new field
+    //   in the Config struct
 
     let config = Config::new(env::args())?;
 
@@ -39,7 +43,7 @@ impl Config {
         let mut dotfiles = vec![];
 
         for arg in args {
-            if arg == "config.toml" {
+            if arg == CONFIG {
                 // read configuration file into a string
                 let config_str = fs::read_to_string(&arg)?;
 
