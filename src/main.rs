@@ -5,9 +5,6 @@ use std::{env, error, fs, path::Path};
 use toml;
 
 fn main() -> Result<(), Box<dyn error::Error>> {
-    // read a list of params
-    let args: Vec<String> = env::args().skip(1).collect();
-
     // TODO:
     // - Add error handling
     // - Pull out all to separate functions, structures etc
@@ -15,7 +12,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     // - Implement tests
     // - Unbind args from hardcoded args[1] position [V]
 
-    let config = Config::new(&args)?;
+    let config = Config::new(env::args())?;
 
     for path in config.dotfiles {
         let dotfile_path = env::var("HOME").unwrap() + "/" + &path;
@@ -37,10 +34,11 @@ struct Config {
 }
 
 impl Config {
-    fn new(args: &[String]) -> Result<Config, Box<dyn error::Error>> {
+    fn new(mut args: env::Args) -> Result<Config, Box<dyn error::Error>> {
+        args.next();
         let mut dotfiles = vec![];
 
-        for arg in args.iter() {
+        for arg in args {
             if arg == "config.toml" {
                 // read configuration file into a string
                 let config_str = fs::read_to_string(&arg)?;
