@@ -24,6 +24,8 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         if Path::new(&dotfile_path).exists() {
             println!("Copying {} ...", path);
             // Next copying logic should be implementing
+        } else {
+            eprintln!("warning: {} path doesn't exists.", path);
         }
     }
 
@@ -35,12 +37,14 @@ fn main() -> Result<(), Box<dyn error::Error>> {
 #[derive(Deserialize, Debug)]
 struct Config {
     dotfiles: Vec<String>,
+    target: String,
 }
 
 impl Config {
     fn new(mut args: env::Args) -> Result<Config, Box<dyn error::Error>> {
         args.next();
         let mut dotfiles = vec![];
+        let mut target = String::new();
 
         for arg in args {
             if arg == CONFIG {
@@ -51,11 +55,12 @@ impl Config {
                 let config: Config = toml::from_str(&config_str)?;
 
                 dotfiles = config.dotfiles; // shadows previous empty `dotfiles` var
+                target = config.target;
             } else {
                 return Err(Box::from("config.toml was not provided"));
             }
         }
 
-        Ok(Config { dotfiles })
+        Ok(Config { dotfiles, target })
     }
 }

@@ -9,3 +9,5 @@ dotfiles = [
     ".alacritty.yml",
     ".gitconfig"
 ]
+
+target = "${HOME}/env"
