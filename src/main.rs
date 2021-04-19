@@ -22,8 +22,12 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         let dotfile_path = env::var("HOME").unwrap() + "/" + &path;
 
         if Path::new(&dotfile_path).exists() {
-            println!("Copying {} ...", path);
-            // Next copying logic should be implementing
+            print!("Copying {}...", &path);
+            fs::copy(
+                &path,
+                env::var("HOME").unwrap() + "/" + &config.target + "/" + &path,
+                // FIXME: resolve problem with the target
+            )?;
         } else {
             eprintln!("warning: {} path doesn't exists.", path);
         }
