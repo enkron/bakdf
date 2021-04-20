@@ -10,4 +10,4 @@ dotfiles = [
     ".gitconfig"
 ]
 
-target = "${HOME}/env"
+target = "env"
