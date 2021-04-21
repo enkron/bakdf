@@ -1,11 +1,7 @@
 extern crate serde;
 
 use serde::Deserialize;
-use std::{
-    env, error,
-    fs::{self, OpenOptions},
-    path::Path,
-};
+use std::{env, error, fs, path::Path};
 use toml;
 
 const CONFIG: &str = "config.toml";
@@ -23,19 +19,18 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     let config = Config::new(env::args())?;
 
     for path in config.dotfiles {
-        let dotfile_path = env::var("HOME").unwrap() + "/" + &path;
+        let source_path = env::var("HOME").unwrap() + "/" + &path;
 
-        if Path::new(&dotfile_path).exists() {
+        let mut target_path = path.chars(); // create an iterator from str slice
+        target_path.next(); // skip first element
+
+        if Path::new(&source_path).exists() {
             print!("Copying {}...", &path);
 
-            OpenOptions::new().create(true).write(true).open(&path)?;
-            // Add creation of empty files (assume this line will be removed)
-
             fs::copy(
-                &path,
-                env::var("HOME").unwrap() + "/" + &config.target + "/" + &path,
-                // FIXME: resolve problem with the target
-                // Actually it works, but on target copy creates just empty files
+                &source_path,
+                // create subslice from original str slice with
+                env::var("HOME").unwrap() + "/" + &config.target + "/" + &target_path.as_str(),
             )?;
         } else {
             eprintln!("warning: {} path doesn't exists.", path);
