@@ -7,4 +7,4 @@ dotfiles = [
     ".gitconfig"
 ]
 
-target = "env"
+target = "/Users/srj_b/Documents/env/dotfiles/Darwin"

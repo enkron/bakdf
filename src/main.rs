@@ -1,7 +1,7 @@
 extern crate serde;
 
 use serde::Deserialize;
-use std::{env, error, fs, path::Path};
+use std::{env, error, fs, path::Path, process};
 use toml;
 
 const CONFIG: &str = "config.toml";
@@ -18,22 +18,27 @@ fn main() -> Result<(), Box<dyn error::Error>> {
 
     let config = Config::new(env::args())?;
 
-    for path in config.dotfiles {
-        let source_path = env::var("HOME").unwrap() + "/" + &path;
+    for file in config.dotfiles {
+        let source_path = env::var("HOME").unwrap() + "/" + &file;
 
-        let mut target_path = path.chars(); // create an iterator from str slice
+        let mut target_path = file.chars(); // create an iterator from str slice
         target_path.next(); // skip first element
 
         if Path::new(&source_path).exists() {
-            print!("Copying {}...", &path);
+            print!("Copying {}... ", &file);
 
             fs::copy(
                 &source_path,
-                // create subslice from original str slice with
-                env::var("HOME").unwrap() + "/" + &config.target + "/" + &target_path.as_str(),
-            )?;
+                // create subslice from original str slice with .as_str method
+                String::from(&config.target) + "/" + &target_path.as_str(),
+            )
+            .unwrap_or_else(|err| {
+                eprintln!("{}\nCannot read target field in the {}", err, CONFIG);
+                process::exit(1);
+            });
         } else {
-            eprintln!("warning: {} path doesn't exists.", path);
+            eprintln!("warning: {} file doesn't exists.", file);
+            continue;
         }
 
         println!("Done");
