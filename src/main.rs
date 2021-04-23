@@ -18,6 +18,15 @@ fn main() -> Result<(), Box<dyn error::Error>> {
 
     let config = Config::new(env::args())?;
 
+    if let Err(_) = copy_dotfiles(config) {
+        eprintln!("error: Cannot read target field in the {}", CONFIG);
+        process::exit(1);
+    };
+
+    Ok(())
+}
+
+fn copy_dotfiles(config: Config) -> Result<(), Box<dyn error::Error>> {
     for file in config.dotfiles {
         let source_path = env::var("HOME").unwrap() + "/" + &file;
 
@@ -25,23 +34,19 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         target_path.next(); // skip first element
 
         if Path::new(&source_path).exists() {
-            print!("Copying {}... ", &file);
-
             fs::copy(
                 &source_path,
                 // create subslice from original str slice with .as_str method
                 String::from(&config.target) + "/" + &target_path.as_str(),
-            )
-            .unwrap_or_else(|err| {
-                eprintln!("{}\nCannot read target field in the {}", err, CONFIG);
-                process::exit(1);
-            });
+            )?;
+
+            print!("copying {}.. ", &file);
         } else {
             eprintln!("warning: {} file doesn't exists.", file);
             continue;
         }
 
-        println!("Done");
+        println!("done");
     }
 
     Ok(())
