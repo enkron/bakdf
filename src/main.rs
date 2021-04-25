@@ -15,12 +15,3 @@ fn main() -> Result<(), Box<dyn error::Error>> {
 
     Ok(())
 }
-
-// TODO:
-// - Add error handling
-// - Pull out all to separate functions, structures etc
-// - Move all stuff to lib.rs
-// - Implement tests
-// - Unbind args from hardcoded args[1] position [V]
-// - Add a target as command line option and create a new field
-//   in the Config struct

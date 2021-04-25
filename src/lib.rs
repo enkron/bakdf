@@ -11,7 +11,7 @@ pub fn copy_dotfiles(config: Config) -> Result<(), Box<dyn error::Error>> {
         let source_path = env::var("HOME").unwrap() + "/" + &file;
 
         let mut target_path = file.chars(); // create an iterator from str slice
-        target_path.next(); // skip first element
+        target_path.next(); // skip the first element, that is actually a dot
 
         if Path::new(&source_path).exists() {
             fs::copy(
@@ -63,4 +63,33 @@ impl Config {
 
         Ok(Config { dotfiles, target })
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::File;
+
+    #[test]
+    fn target_file_exists() -> Result<(), Box<dyn error::Error>> {
+        let path = Path::new("/Users/srj_b/.test_file1.txt");
+
+        File::create(&path)?;
+
+        if path.exists() {
+            let config = Config {
+                dotfiles: vec![String::from(".test_file1.txt")],
+                target: env::var("HOME").unwrap() + "/",
+            };
+
+            copy_dotfiles(config)?
+        }
+
+        assert!(Path::new("/Users/srj_b/test_file1.txt").exists());
+
+        Ok(())
+    }
+    // TODO:
+    // - Get rid from hardcoded paths
+    // - Implement cleanup after the test
 }
