@@ -72,11 +72,10 @@ mod tests {
 
     #[test]
     fn target_file_exists() -> Result<(), Box<dyn error::Error>> {
-        let path = Path::new("/Users/srj_b/.test_file1.txt");
+        let source_path = Path::new(env::var("HOME").unwrap().as_str()).join(".test_file1.txt");
+        File::create(&source_path)?;
 
-        File::create(&path)?;
-
-        if path.exists() {
+        if source_path.exists() {
             let config = Config {
                 dotfiles: vec![String::from(".test_file1.txt")],
                 target: env::var("HOME").unwrap() + "/",
@@ -85,11 +84,12 @@ mod tests {
             copy_dotfiles(config)?
         }
 
-        assert!(Path::new("/Users/srj_b/test_file1.txt").exists());
+        let target_path = Path::new(env::var("HOME").unwrap().as_str()).join("test_file1.txt");
+        assert!(target_path.exists());
+
+        fs::remove_file(source_path)?;
+        fs::remove_file(target_path)?;
 
         Ok(())
     }
-    // TODO:
-    // - Get rid from hardcoded paths
-    // - Implement cleanup after the test
 }
