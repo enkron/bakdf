@@ -8,4 +8,13 @@ TODO:
 - Unbind args from hardcoded args[1] position [V]
 - Add a target as command line option and create a new field
   in the Config struct [V]
-- Implement tests
+- Implement tests [V]
+
+
+- Add command line args:
+    1) arg should take a list of dotfiles like in .toml config
+        but it has to have higher precendence;
+
+    2) ...
+
+- If there is no command line args produce stderr out
