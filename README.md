@@ -9,7 +9,7 @@ TODO:
 - Add a target as command line option and create a new field
   in the Config struct [V]
 - Implement tests [V]
-
+- If there is no command line args produce stderr [V]
 
 - Add command line args:
     1) arg should take a list of dotfiles like in .toml config
@@ -17,4 +17,3 @@ TODO:
 
     2) ...
 
-- If there is no command line args produce stderr out
