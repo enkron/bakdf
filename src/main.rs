@@ -1,5 +1,7 @@
+//extern crate clap;
 extern crate serde;
 
+//use clap::{App, Arg};
 use std::{env, error, process};
 use tmp::Config;
 
@@ -17,6 +19,13 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         eprintln!("error: Cannot read target field in the {}", CONFIG);
         process::exit(1);
     };
+
+    //    let matches = App::new("tmp")
+    //        .author(clap::crate_authors!("\n"))
+    //        .arg(Arg::with_name("config.toml").last(true))
+    //        .get_matches();
+    //
+    //    println!("{:?}", matches);
 
     Ok(())
 }
