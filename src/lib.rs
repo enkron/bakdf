@@ -1,5 +1,7 @@
+extern crate clap;
 extern crate serde;
 
+use clap::ArgMatches;
 use serde::Deserialize;
 use std::{env, error, fs, path::Path};
 use toml;
@@ -41,24 +43,36 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(mut args: env::Args) -> Result<Config, Box<dyn error::Error>> {
-        args.next();
-        let mut dotfiles = vec![];
-        let mut target = String::new();
+    pub fn new(args: ArgMatches) -> Result<Config, Box<dyn error::Error>> {
+        let dotfiles;
+        let target;
 
-        for arg in args {
-            if arg == CONFIG {
+        //        if args.value_of(CONFIG) == Some(CONFIG) {
+        //            // read configuration file into a string
+        //            let config_str = fs::read_to_string(CONFIG)?;
+        //
+        //            // get .toml structure from string
+        //            let config: Config = toml::from_str(&config_str)?;
+        //
+        //            dotfiles = config.dotfiles; // shadows previous empty `dotfiles` var
+        //            target = config.target;
+        //        } else {
+        //            return Err(Box::from("config.toml was not provided"));
+        //        }
+
+        match args.value_of(CONFIG) {
+            Some(v) => {
                 // read configuration file into a string
-                let config_str = fs::read_to_string(&arg)?;
+                let config_str = fs::read_to_string(v)?;
 
                 // get .toml structure from string
                 let config: Config = toml::from_str(&config_str)?;
 
                 dotfiles = config.dotfiles; // shadows previous empty `dotfiles` var
                 target = config.target;
-            } else {
-                return Err(Box::from("config.toml was not provided"));
             }
+
+            None => return Err(Box::from("config.toml was not provided")),
         }
 
         Ok(Config { dotfiles, target })
