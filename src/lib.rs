@@ -44,38 +44,30 @@ pub struct Config {
 
 impl Config {
     pub fn new(args: ArgMatches) -> Result<Config, Box<dyn error::Error>> {
-        let dotfiles;
-        let target;
-
-        //        if args.value_of(CONFIG) == Some(CONFIG) {
-        //            // read configuration file into a string
-        //            let config_str = fs::read_to_string(CONFIG)?;
-        //
-        //            // get .toml structure from string
-        //            let config: Config = toml::from_str(&config_str)?;
-        //
-        //            dotfiles = config.dotfiles; // shadows previous empty `dotfiles` var
-        //            target = config.target;
-        //        } else {
-        //            return Err(Box::from("config.toml was not provided"));
-        //        }
-
         match args.value_of(CONFIG) {
             Some(v) => {
-                // read configuration file into a string
-                let config_str = fs::read_to_string(v)?;
+                if v == CONFIG {
+                    // read configuration file into a string
+                    let config_str = fs::read_to_string(v)?;
 
-                // get .toml structure from string
-                let config: Config = toml::from_str(&config_str)?;
+                    // get .toml structure from string
+                    let config: Config = toml::from_str(&config_str)?;
 
-                dotfiles = config.dotfiles; // shadows previous empty `dotfiles` var
-                target = config.target;
+                    //dotfiles = config.dotfiles; // shadows previous empty `dotfiles` var
+                    //target = config.target;
+                    return Ok(Config {
+                        dotfiles: config.dotfiles,
+                        target: config.target,
+                    });
+                } else if Path::new(v).exists() && v != CONFIG {
+                    return Err(Box::from("incorrect config file"));
+                } else {
+                    return Err(Box::from(format!("no such file - {}", v)));
+                }
             }
 
-            None => return Err(Box::from("config.toml was not provided")),
+            None => return Err(Box::from("config file was not provided")),
         }
-
-        Ok(Config { dotfiles, target })
     }
 }
 

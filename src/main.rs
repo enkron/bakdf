@@ -13,15 +13,14 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         .arg(Arg::with_name(CONFIG).index(1))
         .get_matches();
 
-    let config = Config::new(args)?;
-
-    if env::args().count() == 1 {
-        eprintln!("error: The program do nothing without args");
+    let config = Config::new(args).unwrap_or_else(|e| {
+        eprintln!("Problem with configuration: {}", e);
         process::exit(1);
-    }
+    });
 
-    if let Err(_) = tmp::copy_dotfiles(config) {
-        eprintln!("error: Cannot read target field in the {}", CONFIG);
+    if let Err(e) = tmp::copy_dotfiles(config) {
+        eprintln!("error: {} contains invalid elements in its fields", CONFIG);
+        eprintln!("{}", e);
         process::exit(1);
     };
 
