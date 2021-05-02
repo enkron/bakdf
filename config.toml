@@ -8,3 +8,4 @@ dotfiles = [
 ]
 
 target = "/Users/srj_b/Documents/env/dotfiles/Darwin"
+keep_original_target = false

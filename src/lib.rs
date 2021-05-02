@@ -13,7 +13,10 @@ pub fn copy_dotfiles(config: Config) -> Result<(), Box<dyn error::Error>> {
         let source_path = env::var("HOME").unwrap() + "/" + &file;
 
         let mut target_path = file.chars(); // create an iterator from str slice
-        target_path.next(); // skip the first element, that is actually a dot
+
+        if config.keep_original_target == false {
+            target_path.next(); // skip the first element, that is actually a dot
+        }
 
         if Path::new(&source_path).is_dir() {
             eprintln!("warning: {} is not a file.", file);
@@ -39,12 +42,12 @@ pub fn copy_dotfiles(config: Config) -> Result<(), Box<dyn error::Error>> {
     Ok(())
 }
 
-// bring the Deserialize trait
-// which transforms string into a struct
+// bring the Deserialize trait which transforms string into a struct
 #[derive(Deserialize, Debug)]
 pub struct Config {
     dotfiles: Vec<String>,
     target: String,
+    keep_original_target: bool,
 }
 
 impl Config {
@@ -58,11 +61,20 @@ impl Config {
                     // get .toml structure from string
                     let config: Config = toml::from_str(&config_str)?;
 
-                    //dotfiles = config.dotfiles; // shadows previous empty `dotfiles` var
-                    //target = config.target;
+                    if config.keep_original_target == true
+                        && args.is_present("orig_target") == false
+                    {
+                        return Ok(Config {
+                            dotfiles: config.dotfiles,
+                            target: config.target,
+                            keep_original_target: config.keep_original_target,
+                        });
+                    }
+
                     return Ok(Config {
                         dotfiles: config.dotfiles,
                         target: config.target,
+                        keep_original_target: args.is_present("orig_target"),
                     });
                 } else if Path::new(v).exists() && v != CONFIG {
                     return Err(Box::from("incorrect config file"));
@@ -90,6 +102,7 @@ mod tests {
             let config = Config {
                 dotfiles: vec![String::from(".test_file1.txt")],
                 target: env::var("HOME").unwrap() + "/",
+                keep_original_target: false,
             };
 
             copy_dotfiles(config)?
