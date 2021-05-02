@@ -3,7 +3,7 @@ extern crate serde;
 
 use clap::{App, Arg};
 use std::{env, error, process};
-use tmp::Config;
+use bakdf::Config;
 
 const CONFIG: &str = "config.toml";
 
@@ -18,7 +18,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         process::exit(1);
     });
 
-    if let Err(e) = tmp::copy_dotfiles(config) {
+    if let Err(e) = bakdf::copy_dotfiles(config) {
         eprintln!("error: {} contains invalid elements in its fields", CONFIG);
         eprintln!("{}", e);
         process::exit(1);
