@@ -15,6 +15,11 @@ pub fn copy_dotfiles(config: Config) -> Result<(), Box<dyn error::Error>> {
         let mut target_path = file.chars(); // create an iterator from str slice
         target_path.next(); // skip the first element, that is actually a dot
 
+        if Path::new(&source_path).is_dir() {
+            eprintln!("warning: {} is not a file.", file);
+            continue;
+        }
+
         if Path::new(&source_path).exists() {
             fs::copy(
                 &source_path,

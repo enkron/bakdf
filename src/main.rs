@@ -1,9 +1,9 @@
 extern crate clap;
 extern crate serde;
 
+use bakdf::Config;
 use clap::{App, Arg};
 use std::{env, error, process};
-use bakdf::Config;
 
 const CONFIG: &str = "config.toml";
 
