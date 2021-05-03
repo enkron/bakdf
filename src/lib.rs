@@ -61,20 +61,18 @@ impl Config {
                     // get .toml structure from string
                     let config: Config = toml::from_str(&config_str)?;
 
+                    let mut keep_original_target = args.is_present("orig_target");
+
                     if config.keep_original_target == true
                         && args.is_present("orig_target") == false
                     {
-                        return Ok(Config {
-                            dotfiles: config.dotfiles,
-                            target: config.target,
-                            keep_original_target: config.keep_original_target,
-                        });
+                        keep_original_target = config.keep_original_target;
                     }
 
                     return Ok(Config {
                         dotfiles: config.dotfiles,
                         target: config.target,
-                        keep_original_target: args.is_present("orig_target"),
+                        keep_original_target,
                     });
                 } else if Path::new(v).exists() && v != CONFIG {
                     return Err(Box::from("incorrect config file"));
