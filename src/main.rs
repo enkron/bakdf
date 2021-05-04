@@ -10,7 +10,11 @@ const CONFIG: &str = "config.toml";
 fn main() -> Result<(), Box<dyn error::Error>> {
     let args = App::new(clap::crate_name!())
         .author(clap::crate_authors!("\n"))
-        .arg(Arg::with_name(CONFIG).index(1))
+        .arg(
+            Arg::with_name(CONFIG)
+                .index(1)
+                .help("Set configuration file"),
+        )
         .arg(
             Arg::with_name("orig_target")
                 .short("k")
