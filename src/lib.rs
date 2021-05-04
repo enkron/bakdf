@@ -8,7 +8,7 @@ use toml;
 
 pub const CONFIG: &str = "config.toml";
 
-pub fn copy_dotfiles(config: Config) -> Result<(), Box<dyn error::Error>> {
+pub fn copy_dotfiles(config: Config, args: &ArgMatches) -> Result<(), Box<dyn error::Error>> {
     for file in config.dotfiles {
         let source_path = env::var("HOME").unwrap() + "/" + &file;
 
@@ -19,7 +19,7 @@ pub fn copy_dotfiles(config: Config) -> Result<(), Box<dyn error::Error>> {
         }
 
         if Path::new(&source_path).is_dir() {
-            eprintln!("warning: {} is not a file.", file);
+            eprintln!("warning: {} is a directory", file);
             continue;
         }
 
@@ -30,13 +30,17 @@ pub fn copy_dotfiles(config: Config) -> Result<(), Box<dyn error::Error>> {
                 String::from(&config.target) + "/" + &target_path.as_str(),
             )?;
 
-            print!("copying {}.. ", &file);
+            if args.is_present("verbosity") {
+                print!("copying {}.. ", &file);
+            }
         } else {
-            eprintln!("warning: {} file doesn't exists.", file);
+            eprintln!("warning: {} file doesn't exists", file);
             continue;
         }
 
-        println!("done");
+        if args.is_present("verbosity") {
+            println!("done");
+        }
     }
 
     Ok(())
@@ -45,13 +49,14 @@ pub fn copy_dotfiles(config: Config) -> Result<(), Box<dyn error::Error>> {
 // bring the Deserialize trait which transforms string into a struct
 #[derive(Deserialize, Debug)]
 pub struct Config {
+    // Config struct represents congig.toml file structure
     dotfiles: Vec<String>,
     target: String,
     keep_original_target: bool,
 }
 
 impl Config {
-    pub fn new(args: ArgMatches) -> Result<Config, Box<dyn error::Error>> {
+    pub fn new(args: &ArgMatches) -> Result<Config, Box<dyn error::Error>> {
         match args.value_of(CONFIG) {
             Some(v) => {
                 if v == CONFIG {
