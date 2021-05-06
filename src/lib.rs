@@ -43,6 +43,10 @@ pub fn copy_dotfiles(config: Config, args: &ArgMatches) -> Result<(), Box<dyn er
         }
     }
 
+    if !args.is_present("verbosity") {
+        println!("dotfiles successfully copied");
+    }
+
     Ok(())
 }
 
