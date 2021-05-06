@@ -112,7 +112,10 @@ mod tests {
                 keep_original_target: false,
             };
 
-            copy_dotfiles(config)?
+            fs::copy(
+                &source_path,
+                String::from(&config.target) + "/test_file1.txt",
+            )?;
         }
 
         let target_path = Path::new(env::var("HOME").unwrap().as_str()).join("test_file1.txt");
