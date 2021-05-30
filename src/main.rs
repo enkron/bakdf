@@ -5,8 +5,6 @@ use bakdf::Config;
 use clap::{App, Arg, ArgMatches};
 use std::{env, error, process};
 
-const CONFIG: &str = "config.toml";
-
 fn main() -> Result<(), Box<dyn error::Error>> {
     let config = Config::new(&arg_parse()).unwrap_or_else(|e| {
         eprintln!("Problem with configuration: {}", e);
@@ -14,7 +12,10 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     });
 
     if let Err(e) = bakdf::copy_dotfiles(config, &arg_parse()) {
-        eprintln!("error: {} contains invalid elements in its fields", CONFIG);
+        eprintln!(
+            "error: {} contains invalid elements in its fields",
+            bakdf::CONFIG
+        );
         eprintln!("{}", e);
         process::exit(1);
     };
@@ -28,7 +29,7 @@ fn arg_parse() -> ArgMatches<'static> {
         .version(clap::crate_version!())
         .about(clap::crate_description!())
         .arg(
-            Arg::with_name(CONFIG)
+            Arg::with_name(bakdf::CONFIG)
                 .index(1)
                 .help("Set configuration file"),
         )
