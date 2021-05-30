@@ -63,7 +63,7 @@ impl Config {
     pub fn new(args: &ArgMatches) -> Result<Config, Box<dyn error::Error>> {
         match args.value_of(CONFIG) {
             Some(v) => {
-                if v == CONFIG {
+                if Path::new(v).ends_with(CONFIG) {
                     // read configuration file into a string
                     let config_str = fs::read_to_string(v)?;
 
@@ -83,7 +83,7 @@ impl Config {
                         target: config.target,
                         keep_original_target,
                     });
-                } else if Path::new(v).exists() && v != CONFIG {
+                } else if Path::new(v).exists() && !Path::new(v).ends_with(CONFIG) {
                     return Err(Box::from("incorrect config file"));
                 } else {
                     return Err(Box::from(format!("no such file - {}", v)));
