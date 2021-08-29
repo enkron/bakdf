@@ -1,0 +1,11 @@
+dotfiles = [
+	".bash_profile",
+	".bashrc",
+    ".vimrc",
+    ".alacritty.yml",
+    ".gitconfig",
+    ".tmux.conf"
+]
+
+target = "/home/bsa/dotfiles_linux"
+keep_original_target = false
