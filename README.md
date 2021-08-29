@@ -1,4 +1,4 @@
-* The programm takes all dotfiles as argument;
+* The program takes all dotfiles as argument;
 * Copies that files to a `target`.
 
 TODO:
