@@ -4,7 +4,8 @@ dotfiles = [
     ".vimrc",
     ".alacritty.yml",
     ".gitconfig",
-    ".tmux.conf"
+    ".tmux.conf",
+    ".muttrc"
 ]
 
 target = "/home/bsa/dotfiles_linux"
