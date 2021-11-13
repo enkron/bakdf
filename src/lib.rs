@@ -12,10 +12,21 @@ pub fn copy_dotfiles(config: Config, args: &ArgMatches) -> Result<(), Box<dyn er
     for file in config.dotfiles {
         let source_path = env::var("HOME").unwrap() + "/" + &file;
 
-        let mut target_path = file.chars(); // create an iterator from str slice
+        let file_base_name = Path::new(&file)
+            .file_name()
+            .unwrap()
+            .to_os_string()
+            .into_string()
+            .unwrap();
+        // Get path's base name as `&OsStr` type and convert it to `String`
+        // e.g. /home/user/gnupg/gpg.conf get only gpg.conf name
+
+        let mut target_path = file_base_name.chars(); // create an iterator from str slice
 
         if config.keep_original_target == false {
-            target_path.next(); // skip the first element, that is actually a dot
+            if file_base_name.starts_with('.') {
+                target_path.next(); // skip a first element, that is actually a dot
+            }
         }
 
         if Path::new(&source_path).is_dir() {
