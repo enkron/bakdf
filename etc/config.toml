@@ -6,7 +6,8 @@ dotfiles = [
     ".gitconfig",
     ".tmux.conf",
     ".muttrc",
-    ".gnupg/gpg.conf"
+    ".gnupg/gpg.conf",
+    ".config/procps/toprc"
 ]
 
 target = "/home/bsa/dotfiles_linux"
