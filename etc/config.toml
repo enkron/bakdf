@@ -5,7 +5,8 @@ dotfiles = [
     ".alacritty.yml",
     ".gitconfig",
     ".tmux.conf",
-    ".muttrc"
+    ".muttrc",
+    ".gnupg/gpg.conf"
 ]
 
 target = "/home/bsa/dotfiles_linux"
