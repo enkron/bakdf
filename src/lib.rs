@@ -23,10 +23,8 @@ pub fn copy_dotfiles(config: Config, args: &ArgMatches) -> Result<(), Box<dyn er
 
         let mut target_path = file_base_name.chars(); // create an iterator from str slice
 
-        if config.keep_original_target == false {
-            if file_base_name.starts_with('.') {
-                target_path.next(); // skip a first element, that is actually a dot
-            }
+        if config.keep_original_target == false && file_base_name.starts_with('.') {
+            target_path.next(); // skip a first element, that is actually a dot
         }
 
         if Path::new(&source_path).is_dir() {
