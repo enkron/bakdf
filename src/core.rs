@@ -1,3 +1,6 @@
+// This module provides core functionality such as copy configuration files to
+// a target directory, `Config` struct and its constructor
+
 extern crate clap;
 extern crate serde;
 
@@ -70,7 +73,7 @@ pub struct Config {
 
 impl Config {
     pub fn new(args: &ArgMatches) -> Result<Config, Box<dyn error::Error>> {
-        match args.value_of(CONFIG) {
+        match args.value_of("CONFIG") {
             Some(v) => {
                 if Path::new(v).ends_with(CONFIG) {
                     // read configuration file into a string

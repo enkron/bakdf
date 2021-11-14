@@ -1,20 +1,20 @@
 extern crate clap;
-extern crate serde;
 
-use bakdf::Config;
 use clap::{App, Arg, ArgMatches};
 use std::{env, error, process};
 
+mod core;
+
 fn main() -> Result<(), Box<dyn error::Error>> {
-    let config = Config::new(&arg_parse()).unwrap_or_else(|e| {
+    let config = core::Config::new(&arg_parse()).unwrap_or_else(|e| {
         eprintln!("Problem with configuration: {}", e);
         process::exit(1);
     });
 
-    if let Err(e) = bakdf::copy_dotfiles(config, &arg_parse()) {
+    if let Err(e) = core::copy_dotfiles(config, &arg_parse()) {
         eprintln!(
             "error: {} contains invalid elements in its fields",
-            bakdf::CONFIG
+            core::CONFIG
         );
         eprintln!("{}", e);
         process::exit(1);
@@ -29,7 +29,7 @@ fn arg_parse() -> ArgMatches<'static> {
         .version(clap::crate_version!())
         .about(clap::crate_description!())
         .arg(
-            Arg::with_name(bakdf::CONFIG)
+            Arg::with_name("CONFIG")
                 .index(1)
                 .default_value("/home/bsa/etc/bakdf/config.toml")
                 .help("Set configuration file"),
