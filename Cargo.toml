@@ -2,9 +2,17 @@
 name = "bakdf"
 version = "1.1.0"
 authors = ["Sergei Belokon <srj.belokon@gmail.com>"]
+description = """
+bakdf stands for backup dotfiles, this is a command line tool that just
+copies configuration files which usually are located inside an user's
+home directory and places them to a local git repository.
+"""
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "bf"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
