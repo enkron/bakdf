@@ -13,7 +13,7 @@ pub const CONFIG: &str = "config.toml";
 
 pub fn copy_dotfiles(config: Config, args: &ArgMatches) -> Result<(), Box<dyn error::Error>> {
     for file in config.dotfiles {
-        let source_path = env::var("HOME").unwrap() + "/" + &file;
+        let source_path = Path::new(&env::var("HOME").unwrap()).join(&file);
 
         let file_base_name = Path::new(&file)
             .file_name()
