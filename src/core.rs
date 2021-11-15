@@ -1,9 +1,6 @@
 // This module provides core functionality such as copy configuration files to
 // a target directory, `Config` struct and its constructor
 
-extern crate clap;
-extern crate serde;
-
 use clap::ArgMatches;
 use serde::Deserialize;
 use std::{env, error, fs, path::Path};

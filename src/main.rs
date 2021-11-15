@@ -1,5 +1,3 @@
-extern crate clap;
-
 use clap::{App, Arg, ArgMatches};
 use std::{env, error, process};
 
