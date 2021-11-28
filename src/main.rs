@@ -1,11 +1,11 @@
 use clap::{App, Arg, ArgMatches};
-use std::{env, error, process};
+use std::{error, process};
 
 mod core;
 
 fn main() -> Result<(), Box<dyn error::Error>> {
     let config = core::Config::new(&arg_parse()).unwrap_or_else(|e| {
-        eprintln!("Problem with configuration: {}", e);
+        eprintln!("problem with configuration: {}", e);
         process::exit(1);
     });
 
@@ -29,7 +29,7 @@ fn arg_parse() -> ArgMatches<'static> {
         .arg(
             Arg::with_name("CONFIG")
                 .index(1)
-                .default_value("/home/bsa/etc/bakdf/config.toml")
+                //.default_value("/home/bsa/etc/bakdf/config.toml")
                 .help("Set configuration file"),
         )
         .arg(
