@@ -70,28 +70,11 @@ pub struct Config {
 
 impl Config {
     pub fn new(args: &ArgMatches) -> Result<Config, Box<dyn error::Error>> {
-        match args.value_of("CONFIG") {
+        let config_str = match args.value_of("CONFIG") {
             Some(v) => {
                 if Path::new(v).ends_with(CONFIG) {
                     // read configuration file into a string
-                    let config_str = fs::read_to_string(v)?;
-
-                    // get .toml structure from string
-                    let config: Config = toml::from_str(&config_str)?;
-
-                    let mut keep_original_target = args.is_present("orig_target");
-
-                    if config.keep_original_target == true
-                        && args.is_present("orig_target") == false
-                    {
-                        keep_original_target = config.keep_original_target;
-                    }
-
-                    return Ok(Config {
-                        dotfiles: config.dotfiles,
-                        target: config.target,
-                        keep_original_target,
-                    });
+                    fs::read_to_string(v)?
                 } else if Path::new(v).exists() && !Path::new(v).ends_with(CONFIG) {
                     return Err(Box::from("incorrect config file"));
                 } else {
@@ -99,8 +82,35 @@ impl Config {
                 }
             }
 
-            None => return Err(Box::from("config file was not provided")),
+            //None => return Err(Box::from("config file was not provided")),
+            None => String::from(
+                Path::new(env::var("HOME")?.as_str())
+                    .join("etc")
+                    .join("bakdf")
+                    .join(CONFIG)
+                    .to_str()
+                    .unwrap(),
+            ),
+        };
+
+        println!("{}", Path::new(&config_str).exists()); // DEBUG
+        println!("{}", &config_str); // DEBUG
+        println!("{:?}", &args.value_of("CONFIG")); // DEBUG
+
+        // get .toml structure from string
+        let config: Config = toml::from_str(&config_str)?;
+
+        let mut keep_original_target = args.is_present("orig_target");
+
+        if config.keep_original_target == true && args.is_present("orig_target") == false {
+            keep_original_target = config.keep_original_target;
         }
+
+        Ok(Config {
+            dotfiles: config.dotfiles,
+            target: config.target,
+            keep_original_target,
+        })
     }
 }
 
