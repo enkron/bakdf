@@ -29,7 +29,6 @@ fn arg_parse() -> ArgMatches<'static> {
         .arg(
             Arg::with_name("CONFIG")
                 .index(1)
-                //.default_value("/home/bsa/etc/bakdf/config.toml")
                 .help("Set configuration file"),
         )
         .arg(
