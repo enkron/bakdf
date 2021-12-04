@@ -85,7 +85,7 @@ impl Config {
             //None => return Err(Box::from("config file was not provided")),
             None => fs::read_to_string(
                 Path::new(env::var("HOME")?.as_str())
-                    .join("etc")
+                    .join(".config")
                     .join("bakdf")
                     .join(CONFIG)
                     .to_str()
