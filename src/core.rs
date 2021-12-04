@@ -83,19 +83,15 @@ impl Config {
             }
 
             //None => return Err(Box::from("config file was not provided")),
-            None => String::from(
+            None => fs::read_to_string(
                 Path::new(env::var("HOME")?.as_str())
                     .join("etc")
                     .join("bakdf")
                     .join(CONFIG)
                     .to_str()
                     .unwrap(),
-            ),
+            )?,
         };
-
-        println!("{}", Path::new(&config_str).exists()); // DEBUG
-        println!("{}", &config_str); // DEBUG
-        println!("{:?}", &args.value_of("CONFIG")); // DEBUG
 
         // get .toml structure from string
         let config: Config = toml::from_str(&config_str)?;
