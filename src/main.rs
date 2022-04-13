@@ -1,46 +1,37 @@
-use clap::{App, Arg, ArgMatches};
-use std::{error, process};
-
-mod core;
+use std::{
+    env, error, fs, os,
+    path::{Path, PathBuf},
+};
 
 fn main() -> Result<(), Box<dyn error::Error>> {
-    let config = core::Config::new(&arg_parse()).unwrap_or_else(|e| {
-        eprintln!("problem with configuration: {}", e);
-        process::exit(1);
-    });
+    let rps = Rps::new()?;
+    // 1st we're creating a directories' structure in user's home
+    fs::create_dir_all(&rps.path)?;
 
-    if let Err(e) = core::copy_dotfiles(config, &arg_parse()) {
-        eprintln!(
-            "error: {} contains invalid elements in its fields",
-            core::CONFIG
-        );
-        eprintln!("{}", e);
-        process::exit(1);
-    };
+    // 2nd we have to detect OS type, because symlink creation is platform dependent
+    if cfg!(unix) {
+        os::unix::fs::symlink(
+            rps.path.join("env").join("dotfiles").join("Linux"),
+            Path::new(env::var("HOME")?.as_str()).join("df_linux"),
+        )?;
+    }
 
     Ok(())
 }
 
-fn arg_parse() -> ArgMatches<'static> {
-    App::new(clap::crate_name!())
-        .author(clap::crate_authors!("\n"))
-        .version(clap::crate_version!())
-        .about(clap::crate_description!())
-        .arg(
-            Arg::with_name("CONFIG")
-                .index(1)
-                .help("Set configuration file"),
-        )
-        .arg(
-            Arg::with_name("orig_target")
-                .short("k")
-                .help("Keep original target name"),
-        )
-        .arg(
-            Arg::with_name("verbosity")
-                .short("v")
-                .long("verbose")
-                .help("Increase verbosity"),
-        )
-        .get_matches()
+// the structure represents repositories' entity in user's environment
+struct Rps {
+    path: PathBuf,
+}
+
+impl Rps {
+    fn new() -> Result<Self, env::VarError> {
+        // build a `path` field
+        let path = Path::new(env::var("HOME")?.as_str())
+            .join("rps")
+            .join("github.com")
+            .join("enkron");
+
+        Ok(Self { path })
+    }
 }
