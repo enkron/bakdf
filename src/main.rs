@@ -1,5 +1,6 @@
 use std::{
-    env, error, fs, os,
+    env::{self, VarError},
+    error, fs, os,
     path::{Path, PathBuf},
 };
 
@@ -26,7 +27,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     Ok(())
 }
 
-// the structure represents repositories' entity in user's environment
+// repositories' entity in user's environment
 struct Rps {
     path: PathBuf,
 }
@@ -43,7 +44,7 @@ impl Default for Rps {
 }
 
 impl Rps {
-    fn new(dir_name: &str) -> Result<Self, env::VarError> {
+    fn new(dir_name: &str) -> Result<Self, VarError> {
         // build a `path` field
         let path = Path::new(env::var("HOME")?.as_str())
             .join(dir_name)
